@@ -1,0 +1,27 @@
+Source Code for the Translator and Interpreter:
+  ARCHSYS  PAS      Routines assisting the "system" object.
+  CREATE   PAS      CREATE program stub.
+  CRYPT    PAS      Routines for encrypting translated adventures.
+  ERROR    PAS      Error message routines.
+  EXPR     PAS      Table (precedence etc.) for expression parser.
+  GAMESTAT PAS      Routines for saving the current game state.
+  HEAPSORT PAS      The heap sort routines.
+  ID_TABLE PAS      The hash table for storing identifiers.
+  INTRPTR  PAS      The main interpreter.
+  KEYWORDS PAS      Table of reserved words and keywords.
+  LINKLIST PAS      Linked list ADT.
+  MISC     PAS      Miscellaneous global definitions.
+  PARSER   PAS      The low-level part of the natural language parser
+  PERFORM  PAS      PERFORM program stub.
+  SAVELOAD PAS      Routines for reading/writing adventure to/from disk.
+  SEMANTIC PAS      Routines for assigning semantic meaning to tokens.
+  STMT     PAS      Defines the "statement" type.
+  SYNEXPR  PAS      Parses expressions.  Uses never-look-back algorithm.
+  SYNSTMT  PAS      Parses statements.
+  SYNTAX   PAS      Parses overall program structure.
+  SYSOBJ   PAS      The "system" object.
+  TIMESTMP PAS      Routines for retrieving a 32-bit timestamp from DOS.
+  TOKEN    PAS      Tokenizer.
+  WRAP     PAS      Implements the word-wrap and screen paging for text output.
+  XARRAY   PAS      The xarray ADT (an extensible array type).
+
