@@ -1,0 +1,9 @@
+Revision history:
+
+1.01    First release.
+1.02    Fix of bug found by Nick Burroughs.  Sometimes loading in a
+        previously saved game state caused several "Internal error:
+        statement not supported yet" messages, followed by a possible
+        hang.
+
+

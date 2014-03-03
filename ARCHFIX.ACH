@@ -1,0 +1,54 @@
+# File: rd3.ach
+
+null main
+
+  active      : FALSE
+  key_pressed : UNDEFINED
+  response    : UNDEFINED
+  turn        : 0
+
+methods
+
+  'AFFIRM': {
+    response := ( ((key_pressed := key) leftfrom 1) within "yY" )
+    write key_pressed
+    response
+    }
+
+  'PLAY': {
+    turn +:= 1
+    write "Turn: ", turn
+    if turn = 10 then active := FALSE
+    }
+
+  'RESET': {
+    active := TRUE
+    write "Game Reset"
+    }
+
+  'START': {
+    writes "Load old game? "
+    if 'AFFIRM' -> main then {
+      writes "Name of file? "
+      'LOAD STATE' -> system
+      read -> system
+      write "Loaded."
+      }
+    else
+      'RESET'
+
+    while active do 'PLAY'
+
+    writes "Save game? "
+    if 'AFFIRM' -> main then {
+      writes "Save to file: "
+      'SAVE STATE' -> system
+      read -> system
+      write "Saved."
+      }
+  }
+
+end
+
+type nothing based on null
+end

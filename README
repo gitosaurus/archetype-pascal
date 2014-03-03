@@ -1,27 +1,87 @@
-Source Code for the Translator and Interpreter:
-  ARCHSYS  PAS      Routines assisting the "system" object.
-  CREATE   PAS      CREATE program stub.
-  CRYPT    PAS      Routines for encrypting translated adventures.
-  ERROR    PAS      Error message routines.
-  EXPR     PAS      Table (precedence etc.) for expression parser.
-  GAMESTAT PAS      Routines for saving the current game state.
-  HEAPSORT PAS      The heap sort routines.
-  ID_TABLE PAS      The hash table for storing identifiers.
-  INTRPTR  PAS      The main interpreter.
-  KEYWORDS PAS      Table of reserved words and keywords.
-  LINKLIST PAS      Linked list ADT.
-  MISC     PAS      Miscellaneous global definitions.
-  PARSER   PAS      The low-level part of the natural language parser
-  PERFORM  PAS      PERFORM program stub.
-  SAVELOAD PAS      Routines for reading/writing adventure to/from disk.
-  SEMANTIC PAS      Routines for assigning semantic meaning to tokens.
-  STMT     PAS      Defines the "statement" type.
-  SYNEXPR  PAS      Parses expressions.  Uses never-look-back algorithm.
-  SYNSTMT  PAS      Parses statements.
-  SYNTAX   PAS      Parses overall program structure.
-  SYSOBJ   PAS      The "system" object.
-  TIMESTMP PAS      Routines for retrieving a 32-bit timestamp from DOS.
-  TOKEN    PAS      Tokenizer.
-  WRAP     PAS      Implements the word-wrap and screen paging for text output.
-  XARRAY   PAS      The xarray ADT (an extensible array type).
+This archive contains Archetype version 1.02 (so numbered because of
+a few minor additions and bug fixes since 1.01, see REV.TXT).
+It should have the following files:
+
+Documents:
+  README        This document.
+  ABOUT.TXT     About Archetype itself, including how to reach me.
+                (Please read next.)
+  GAMES.TXT     How to play adventure games.
+  BUGS.TXT      Known bugs and limitations in this version.
+
+  HOW-TO.TXT    A guide to writing adventure games using Archetype.
+                Along with BARE.ACH, describes the both beginner and
+                advanced adventure features which you can implement
+                with this system.
+  HOW-TO.RTF    The Rich Text Format version of the guide.
+
+  MANUAL.TXT    The complete Archetype reference manual.  Details
+                the constructs of the language itself rather than
+                the overall picture; read it later, not first.
+                It is written for people who have never compiled
+                a program before so don't let your intelligence
+                be insulted.
+  MANUAL.RTF    The Rich Text Format version of the manual.
+
+Games:
+  STARSHIP.ACX  The Starship Solitaire adventure.  Hidden objective -
+                you've got to play it to find out what you have to do!
+                Awakened from suspended animation, alone on a starship,
+                the fate of the slumbering crew depends on you.
+
+  GORREVEN.ACX  The Gorreven Papers.  To think of them was unspeakable;
+                to speak of them was unthinkable.  They're in the wrong
+                hands, and you, intrepid agent that you are, went after
+                them.  But something went wrong and now you're their
+                prisoner!  Escape with the Gorreven Papers -
+                and your life, if you can.
+
+  BARE.ACX      A demo adventure; very simple, no objective.  Source code,
+                BARE.ACH, is included.
+
+  ANIMAL.ACX    The old Animal game (computer tries to guess what animal
+                you're thinking of), implemented using Archetype.  Source code,
+                ANIMAL.ACH, is included, as well as a data file, ANIMAL.DAT,
+                containing the memory of a few games played with it.
+
+Programs:
+  CREATE.EXE    The Archetype translator.  Invoke with no arguments for
+                a listing of available options.
+  PERFORM.EXE   The Archetype interpreter.  Requires .ACX files generated
+                by the translator.
+
+Archetype files:
+  STANDARD.ACH  Included by an Archetype program in order to operate as
+                a standard text adventure.
+  INTRPTR.ACH   Included by STANDARD.ACH .  The adventure interpreter.
+  LEIXCON.ACH   Included by STANDARD.ACH .  The base lexicon.
+  CARDINAL.ACH  Included by STANDARD.ACH .  The cardinal directions of the
+                                            compass.
+
+  UTILITY.ACH   A set of utility types that may be useful.
+  DEBUG.ACH     Include for easier debugging (remember to CREATE
+                with the /D switch).
+
+  BARE.ACH      A bare-bones adventure showing off popular features and
+                explaining how to implement them.
+  BARER.ACH     The same bare-bones adventure without the comments, so
+                as to see the flow of the code.
+
+  ANIMAL.ACH    An interesting implementation of the old favorite computer
+                game, "Animal", where the computer guesses what animal
+                you're thinking of by asking yes-or-no questions.  When
+                you stump it, you teach it.  Saves "data" by taking
+                advantage of the Archetype "save game state" feature.
+
+
+Source Code for the Games:
+  GORREVEN ACH      Source code for "The Gorreven Papers".
+  GORREVEN TYP
+  GORREVEN LEX
+
+  STARSHIP ACH      Source code for "Starship Solitaire"
+  STARSHIP LEX
+  STARSHIP TYP
+  SHIPDIR  ACH
+
 

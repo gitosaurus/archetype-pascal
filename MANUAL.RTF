@@ -1,0 +1,754 @@
+{\rtf1\pc \deff0{\fonttbl{\f0\fmodern pica;}{\f1\fmodern Courier;}
+{\f2\fmodern elite;}{\f3\fmodern prestige;}{\f4\fmodern lettergothic;}
+{\f5\fmodern gothicPS;}{\f6\fmodern cubicPS;}{\f7\fmodern 
+lineprinter;}{\f8\fswiss Helvetica;}{\f9\fmodern avantegarde;}
+{\f10\fmodern spartan;}{\f11\fmodern metro;}{\f12\fmodern 
+presentation;}{\f13\fmodern APL;}{\f14\fmodern OCRA;}{\f15\fmodern 
+OCRB;}{\f16\froman boldPS;}{\f17\froman emperorPS;}{\f18\froman 
+madaleine;}{\f19\froman zapf humanist;}{\f20\froman classic;}
+{\f21\froman roman f;}{\f22\froman roman g;}{\f23\froman roman h;}
+{\f24\froman timesroman;}{\f25\froman century;}{\f26\froman 
+palantino;}{\f27\froman souvenir;}{\f28\froman garamond;}{\f29\froman 
+caledonia;}{\f30\froman bodini;}{\f31\froman university;}{\f32\fscript 
+script;}{\f33\fscript scriptPS;}{\f34\fscript script c;}{\f35\fscript 
+script d;}{\f36\fscript commercial script;}{\f37\fscript park avenue;}
+{\f38\fscript coronet;}{\f39\fscript script h;}{\f40\froman greek;}
+{\f41\froman kana;}{\f42\froman hebrew;}{\f43\froman roman s;}
+{\f44\froman russian;}{\f45\froman roman u;}{\f46\froman roman v;}
+{\f47\froman roman w;}{\f48\fdecor narrator;}{\f49\fdecor emphasis;}
+{\f50\fdecor zapf chancery;}{\f51\fdecor decor d;}{\f52\fdecor old 
+english;}{\f53\fdecor decor f;}{\f54\fdecor decor g;}{\f55\ftech 
+cooper black;}{\f56\ftech Symbol;}{\f57\ftech linedraw;}{\f58\ftech 
+math7;}{\f59\ftech math8;}{\f60\ftech bar3of9;}{\f61\ftech EAN;}
+{\f62\ftech pcline;}{\f63\ftech tech h;}}\margl1440\margr1440
+\sectd\titlepg{\header \pard\plain\qc The Archetype Reference Manual
+\par }{\footer \pard\plain\qc - \chpgn  -\par }\pard\qc \plain\b\f4 
+The Archetype Language Reference Manual\b0 \par \par by\par Derek T. 
+Jones\par \b \par \ql \b0 \par \b\i Overview\par \b0\i0 \par An 
+Archetype program consists of a series of object declarations.  These 
+declarations can be simplified by defining "types" so that the common 
+attributes of several slightly different objects can be described 
+once; this is known as "inheritance" in object-oriented parlance.\par 
+\par Objects consist of changeable \i attributes\i0 , which describe 
+an object's properties, and \i methods\i0 , which describe the 
+object's behavior and how it depends on its own attributes and its 
+interaction with other objects.  Methods are tied to \i messages\i0 ; 
+when the object receives that message, the method associated with it 
+is invoked.\par \par Methods consist of one or more statements tied to 
+a message.  To "invoke" a method means to execute its statements in 
+order from top to bottom.  Some statements have a value; the value of 
+the last statement to be executed is \i returned\i0  to the sender of 
+the message that invoked the method.\par \par Archetype programs are 
+executed by the PERFORM program after being translated into an 
+intermediate binary form by the CREATE program.  The PERFORM program 
+contains a single object named "system" which starts your program by 
+sending the message 'START' to an object named "main".  For this 
+reason every Archetype program has to have one (and only one) object 
+named "main" which contains a method for the 'START' message.\par \par 
+\b\i Object Declarations\par \b0\i0 \par An object declaration has the 
+following form:\par \par <type-name> ( <object-name> | null )\par \par 
+( <attribute-name> : <initial-value> )*\par \par [ methods\par \par ( 
+<message> : <statement> )* ]\par \par end\par \par A typical object 
+declaration:\par \par \f2\fs20 room bare_cell\par \par   desc : 
+"bleak, bare cell"\par \par methods\par \par   'look'  : write "I'm 
+standing in a ", desc, "."\par   'north' : hallway\par \par end\par 
+\f4\fs24 \par \par In the above example, the type "room" had already 
+been defined.  A type must be defined before it is used by an object.  
+The only type that is already defined for you is the "null" type.  The 
+"null" type means that the only attributes and methods that the object 
+contains are what appears in its particular declaration.  Whenever an 
+object is declared to be of a certain type, that object inherits the 
+attributes and methods declared in the definition of the type.\par 
+\par Please NOTE that when an attribute has a default expression, as 
+above, the attribute contains the \i unevaluated form\i0  of the 
+expression.  This is in contrast to what happens when the attribute is 
+assigned a new value at run-time with the := operator (see \i 
+Operators and Expressions\i0  below).  What this means is that in an 
+object declaration such as:\par \par \f2\fs20 null abc\par   a   : 
+3\par   def : a + 5\par end\par \f4\fs24 \par the value of the 
+attribute "def" will \i change\i0  if the value of attribute "a" 
+changes.\par \par When an object inherits an attribute or method, it 
+means that unless that object specifically redefines that attribute or 
+method, it will have the attribute or method defined by the type.  
+Look at the example below:\par \par \f2\fs20 type shouter based on 
+null\par \par   name : "an unremarkable shouting object"\par \par 
+methods\par \par   'shout' : >>Shout, Shout, Ready Or Not!\par   'who 
+are you' :\par     write "I am ", name, "."\par \par end\par \par 
+shouter Bob\par \par   name : "Bob"\par \par end\par \f4\fs24 \par 
+\par The object Bob did not declare the method 'shout' or the method 
+'who are you', but inherited them from the "shouter" declaration 
+because it is a "shouter" type.  It did not inherit the "name" 
+attribute because it had its own specific declaration for that.  The 
+code above could be replaced by the single declaration below:\par \par 
+\f2\fs20 null Bob\par \par   name : "Bob"\par \par methods\par \par   
+'shout' : >>Shout, Shout, Ready Or Not!\par   'who are you' :\par     
+write "I am ", name, "."\par \par end\par \f4\fs24 \par \par For a 
+single object, the code above seems smaller and simpler, and perhaps 
+it is.  But if you had even two "shouter" objects, using a common type 
+definition saves you time, makes the code clearer, and actually uses 
+less memory while being executed.\par \par Type definitions can 
+inherit attributes and methods from other type definitions.  In the 
+above example, type "shouter" was based on "null", meaning that there 
+was no inheritance.  But we could define a type "screamer" based on 
+"shouter":\par \par \f2\fs20 type screamer based on shouter\par \par   
+IsAscreamer : TRUE\par \par methods\par \par   'scream' : >>I CAN 
+SCREAM TOO!\par \par end\par \f4\fs24 \par Now if we make an object of 
+that type:\par \par \f2\fs20 screamer Joe\par \par   name : "Joe"\par 
+\par methods\par \par   'sing' : >>Tra la la!\par \par end\par 
+\f4\fs24 \par it is the same as if we had declared Joe as:\par \par 
+\f2\fs20 null Joe\par \par   IsAscreamer : TRUE\par   name : "Joe"\par 
+\par methods\par \par   'sing' : >>Tra la la!\par   'scream' : >>I CAN 
+SCREAM TOO!\par   'shout' : >>Shout, Shout, Ready Or Not!\par   'who 
+are you' :\par     write "I am ", name, "."\par \par end\par \f4\fs24 
+\par The object "Joe" inherits attributes and methods first from the 
+"screamer" type, and then, because "screamer" is based on "shouter", 
+from the "shouter" type.\par \par The trick of the "IsAscreamer" 
+attribute is a common one in Archetype.  If every type declares an 
+attribute named IsA<type\_name>, it is easy to tell whether an 
+object's particular "family tree" has that type in it:\par \par 
+\f2\fs20 if any_object.IsAshouter then\par   write any_object.desc, " 
+is a shouter."\par \f4\fs24 \par \b\i Statements\par \b0\i0 \par An 
+Archetype method is a single statement.  However, this statement can 
+be compound, that is, made up of several statements inside curly 
+braces \{ \} .  For example:\par \par \f2\fs20 null obj\par \par 
+methods\par \par   'ex1' : write "This is a single statement."\par   
+'ex2' : \{\par     write "This is still a single statement 
+because"\par     write "both these statements are inside curly 
+braces."\par     \}\par \par \keepn   'ex3' :\par     write "Although 
+this might look like a compound statement,"\par     write "it is not; 
+this line and the next will be flagged"\par     write "as errors by 
+the CREATE program."\par \par \pard end\par \f4\fs24 \par The 'ex3' 
+method is only tied to the first statement.  The next two statements 
+are "stranded" and will prevent the program from being compiled into 
+an executable form.\par \par \keepn \b\i Reference To Archtype 
+Statements\b0\i0 \par \par \pard \i How To Read This Manual:\i0   Each 
+statement is preceded by a single line followed by its complete syntax 
+in Backus-Naur form.  If you are not familiar with Backus-Naur form, 
+read Appendix A.\par \pard\keepn\brdrt\brdrs \b include\b0  "\i 
+filename\i0 "\par \pard \par This is probably the first Archetype 
+statement you will use, in order to include STANDARD.ACH.  The \i 
+filename\i0  must be a string literal enclosed in double quotes.  You 
+can put a pathname on the include file if you like.  The compiler will 
+first search the current directory for the file and then the directory 
+in which the compiler is located.  All of the text in the file is 
+compiled as though you had included it there with your editor.\par 
+\par \pard\keepn\brdrt\brdrs ( \b write\b0  | \b writes\b0  | \b stop
+\b0  ) [ <expression> (\b ,\b0  <expression> )* ]\par \pard\keepn \par 
+\pard The \b write\b0 , \b writes\b0 , and \b stop\b0  statements all 
+take zero or more comma-separated expressions and write them to the 
+screen.  The \b write\b0  statement finishes off the line after 
+writing its expressions.  The \b writes\b0  statement keeps the line 
+"dangling" so that subsequent output appears on the same line.  The \b 
+stop\b0  statement halts the Archetype program after writing its 
+output and returns to DOS.\par \par All Archetype output is 
+word-wrapped and "paged".  No words will be split across the right 
+margin, and text will not flow off the top of the screen before the 
+user can read it all.  After 23 lines of text, a "Hit any key to cont
+inue" message is displayed and the rest of the text is shown after the 
+key is hit.  In other words, all text output is "civilized" without 
+the programmer having to program specifically for it.\par \par \i 
+Examples:\par \i0 \par \f2\fs20 drinkable poison\par   desc   : 
+"golden goblet"\par   filled : TRUE\par methods\par   'look' : \{\par  
+   writes "I look inside the ", desc, " and see "\par     if filled 
+then\par       write "A frothing, noxious potion!"\par     else\par    
+   write "nothing."\par     \}\par   'drink' :\par     if filled 
+then\par       stop "I drink it down... Garg!  I die in agony."\par    
+ else\par       write "The ", desc, " is empty."\par end\par \par 
+object manual\par   desc     : "programmer's manual"\par   location : 
+desk\par methods\par   'look' : write "As I look at the manual, I see 
+that it has ",\par            "a useful tip on the use of a single 
+write ",\par \tab \tab  "statement to make a block of free-flowing 
+text ",\par \tab \tab  "that is guaranteed to wrap correctly:  using a 
+",\par \tab \tab  "series of comma-separated strings."\par \sa240 
+end\par \sa0 \f4\fs24 \par \li1440\fi-1440 \i Returns:\i0 \tab The w
+rite statements always return the value of the last <expression> they 
+write.\par \li0\fi0 \par \pard\brdrt\brdrs \b if\b0  <expression> \b 
+then\b0  <statement> [ \b else\b0  <statement> ]\par \pard \par The \b 
+if\b0  statement is extremely important because it is one of the only 
+ways of modifying an object's behavior based on any of its attributes. 
+ <expression> is evaluated; if it is UNDEFINED, ABSENT, or FALSE, the 
+statement following \b else\b0  is executed; otherwise the statment 
+following \b then\b0  is executed.  If <expression> is UNDEFINED, 
+ABSENT, or FALSE and there is no \b else\b0  branch in the \b if\b0  
+statement, nothing happens.  There must always be a \b then\b0  
+branch.  The <statement> following \b then\b0  or \b else\b0  can be 
+another \b if\b0  statement.  One thing to be careful of when having 
+another \b if\b0  statement follow a \b then\b0  is that the next \b 
+else\b0  encountered will be considered a part of the most recent \b 
+then\b0 .  If this is not what you want, use curly braces to surround 
+the inner \b if\b0  statement.\par \par \i Examples:\par \i0 \par 
+\f2\fs20 object airlock\par \par   open      : TRUE\par   locked    : 
+TRUE\par \par methods\par \par   'leave' :\par     if not 
+spacesuit.wearing then\par       stop "I'm not wearing a spacesuit!  I 
+die."\par     else if not spacesuit.patched then\par       stop "All 
+the air escapes through the hole in the suit!"\par     else if not 
+helmet.wearing then\par       stop "I'm not wearing a helmet!  I 
+die."\par     else \{\par       write "I step out of the airlock."\par 
+      message --> object\par       \}\par \par end\par \f4\fs24 \par 
+\li1440\fi-1440 \i Returns:\i0 \tab The \b if\b0  expression returns 
+the value of the last executed <statement>.  If there is no else 
+branch, and <expression> is UNDEFINED, ABSENT, or FALSE, then the 
+value of the \b if\b0  statement is UNDEFINED.\par \li0\fi0 \par \par 
+\pard\keepn\brdrt\brdrs \b case\b0  <test expression> \b of \{\par 
+\pard\keepn \b0 \tab ( <expression> \b :\b0  <statement> )* [ \b 
+default :\b0  <statement> ] \b \}\b0 \par \par \pard The \b case\b0  
+statement is a way of checking an expression to see if it matches one 
+of several values.  <test expression> is evaluated only once.  Then 
+the <expression> : <statement> pairs following the word \b of\b0  and 
+a curly brace are evaluated from first to last until one of the 
+<expression>s matches <test expression>.  If this happens, the 
+<statement> following the colon is executed.  The word \b default\b0  
+matches any <test expression> and therefore must be at the end of the 
+\b case\b0  statement.  The case statment usually replaces a more 
+complicated if-then-else-if... structure.\par \par \i Example:\i0 \par 
+\par Instead of\par \par \f2\fs20 \{ tries +:= 1\par   if tries = 1 
+then\par     write "I try to open it with my bare hands, but I 
+can't."\par   else if tries = 2 then\par     write "I try and try but 
+it stays closed."\par   else if tries = 3 then\par     write "I scream 
+with frustration, but the can won't open."\par   else if tries = 4 
+then\par     write "I pound the can upon the pavement.  Stays 
+shut."\par   else\par     write "No.  I've given up." \}\par \f4\fs24 
+\par you can write\par \par \f2\fs20   case tries +:= 1 of \{\par     
+1 : write "I try to open it with my bare hands, but I can't."\par     
+2 : write "I try and try but it stays closed."\par     3 : write "I 
+scream with frustration, but the can ",\par \tab \tab \tab \tab "won't 
+open."\par     4 : write "I pound the can upon the pavement.  Stays 
+shut."\par     default : write "No.  I've given up."\par     \}\par 
+\f4\fs24 \par \par \pard\brdrt\brdrs \b while\b0  <expression> \b do
+\b0  <statement>\par \pard \par The \b while\b0  statement is the most 
+straightforward way to do something repeatedly.  <expression> is 
+evaluated; if it is UNDEFINED, ABSENT, or FALSE, the while statment 
+ends.  If not, <statement> is executed and <expression> is evaluated 
+again.\par \par There are two ways to stop a \b while\b0  loop:  
+<statement> must eventually cause <expression> to evaluate to 
+UNDEFINED, ABSENT, or FALSE, or <statement> must contain the \b break
+\b0  statment.\par \par Note that if <expression> is UNDEFINED, 
+ABSENT, or FALSE before entering the \b while\b0  loop, <statement> 
+will never be evaluated.\par \par \i Examples:\par \i0 \par \f2\fs20 
+\{\tab \tab # sums up the numbers between 1 and x\par   while x > 0 do 
+\{\par     sum +:= x\par     x -:= 1\par     \}\par   write "The sum 
+is ", sum\par \}\par \par # interactive questioning\par \par   while 
+TRUE do \{\par     writes "What message would you like to send? "\par  
+   if (m := read) == "quit" then\par       break\par     else\par      
+ m -> obj\par   \}\par \f4\fs24 \par Note that in the above example, 
+the only way the loop can exit is with the \b break\b0  statement, 
+since <expression> will always be TRUE.\par \par \pard\brdrt\brdrs \b 
+for\b0  <expression> \b do\b0  <statement>\par \pard \par The \b for
+\b0  statement is the other way of doing things repeatedly.  It is 
+used when you want to do some action to all or some set of the objects 
+in your program.\par \par <expression> should contain the keyword \b 
+each\b0 .  This keyword is set, in turn, to each object in your 
+program.  Every time <expression> does not evaluate to UNDEFINED, 
+ABSENT, or FALSE, <statement> is executed.  <statement> will usually 
+contain the keyword \b each\b0  as well, which retains its value until 
+<expression> is evaluated again.\par \par \i Examples:\par \i0 \par 
+\f2\fs20 object purse\par \par \keepn methods\par   'empty' : \{\par   
+  write "I empty out the purse and find:"\par     for each.location = 
+purse do \{\par       write each.desc\par       each.location = 
+player.location; 'MOVE' -> each\par     \}\par   \}\par \pard end\par 
+\f4\fs24 \par If you want <statement> to apply to every single object 
+in your program, not just those that satisfy some <expression>, 
+write\par \par for each do ...\par \par Note that even if <expression> 
+only specifies a few objects out of the hundred or so in your program, 
+\i all\i0  of the program's objects must be tested.  For this reason 
+the \b for\b0  statement can take longer that it seems it should, 
+especially for a large program.\par \par If you want to find just the 
+first instance of the set of objects you're looking for, you can use 
+the \b break\b0  statement to jump out the instant <statement> is 
+evaluated:\par \par \f2\fs20 # player needs a container in their 
+possession\par \{\par   useful := UNDEFINED\par   for 
+each.IsAcontainer and each.location = player do \{\par     useful := 
+each\par     break\par   \}\par   if useful then\par     write "You 
+can use ", useful.desc, "."\par   else\par     write "You don't have 
+anything useful."\par \}\par \f4\fs24 \par \pard\keepn\brdrt\brdrs \b 
+create\b0  <type name> \b named\b0  <attribute>\par \pard\keepn \par 
+\pard Most of the objects in your program will probably be defined 
+within the program themselves.  However, there are some situations 
+where you would like to add an object to your program \i dynamically
+\i0 , that is, after the program is already underway.  The \b create
+\b0  statement is the way to do this.  This statement instantiates an 
+object of <type name> and causes <attribute> to point to it.  
+<attribute> is said to \i reference\i0  the new object.  The new 
+object will not have its own name; it is actually a nameless object.  
+If you assign some other value to <attribute>, without keeping track 
+of the new object some other way, it will be hard to find again.  (The 
+\b for\b0  statement will pick it up, however.)  Here is one 
+application of the create statement.  The following types define a 
+list.  The nodes act like "coathangers"; the senders of the 'Attach 
+Me' messages are pointed to by the nodes, which in turn point to the 
+next node down the list.  In order for this to work, the nodes have to 
+be created as they are needed.\par \par \keepn \f2\fs20 type node 
+based on null\par \par   next  : UNDEFINED\par   refer : UNDEFINED\par 
+\par \pard end\par \par type list based on null\par \par   head : 
+UNDEFINED\par   temp : UNDEFINED\par \par methods\par \par   'Attach 
+Me' : \{\par     create node named temp\par     temp.refer := 
+sender\par     temp.next := head\par     head := temp\par     \}\par 
+\par   'Display List' : \{\par     temp := head\par     while temp do 
+\{\par       'Display Self' -> temp.refer\par       temp := 
+temp.next\par       \}\par     \}\par \par end\par \f4\fs24 \par Note 
+that the example above assumes that the senders of the 'Attach Me' 
+message have a 'Display Self' method which they can respond to.\par 
+\par \pard\keepn\brdrt\brdrs \b destroy \b0 <attribute>\par 
+\pard\keepn \par \pard This statement performs the opposite of the 
+create statement.  If <attribute> is pointing to a dynamically 
+instantiated object, the object will be destroyed.  Any other 
+attributes which happen to be referencing it will now evaluate to 
+UNDEFINED.  We can extend the list type defined above by adding the 
+following method to the list type:\par \par \f2\fs20 'Shrink List' : 
+\{\par   if head then \{\par     temp := head\par     head := 
+head.next\par     destroy temp\par     \}\par \f4\fs24 \par This 
+method shrinks the list by one element by removing the top 
+element.\par \par \par \keepn \b\i Keywords\par \b0\i0 \par \pard 
+Archetype has a number of keywords which cannot be used as object, 
+type, or attribute names because they evaluate to special values 
+depending on their context.\par \par \li1440\fi-1440 \b each\b0 \tab 
+UNDEFINED outside of a \b for\b0  loop.  Within a \b for\b0  loop, 
+evaluates to each object in the program, starting with the first one 
+defined for the first iteration of the loop and evaluating to the next 
+one for the next iteration, and so forth.\par \b key\b0 \tab Evaluates 
+to a single keypress.  When the program tries to evaluate \b key\b0 , 
+execution stops until the user presses a single key.  \b key\b0  will 
+then evaluate to this character.\par \b message\b0 \tab The last 
+message received by the object.  Most useful in a default method, 
+where you may not know at the time of writing the program which 
+message might be invoking the method.\par \b read\b0 \tab Like \b key
+\b0 , except that program execution will be suspended until the user 
+terminates their input with a RETURN.  \b read\b0  will then evaluate 
+to the entire line that the user typed.\par \b self\b0 \tab Evaluates 
+to the current object.  Most useful in a type definition, where you 
+are trying to code for the general case.\par \b sender\b0 \tab 
+Evaluates to the sender of \b message\b0 .  Since Archetype does not 
+support arguments, this is a method's only link to any necessary data 
+that the sender might have.\par \li0\fi0 \par \par \keepn \b\i 
+Operators and Expressions\par \b0\i0 \par \pard There are exactly 
+three forms of an expression, which can be represented by the 
+following BNF:\par \par \li2880\fi-2880 \f2\fs20 <expression> :==\tab 
+( <value> |\line ( <expression> <binary operator> <expression> ) | 
+(\~<unary operator> <expression> ) )\par \li0\fi0 \f4\fs24 \par The 
+operators following are discussed in rough order of their importance 
+and significance.\par \par \b Assignment\b0   ( \b :=, +:=, -:=, *:=, 
+/:=, &:=\b0   )\par \par The assignment operator always has the form 
+<attribute> := <expression>.  If the left side does not evaluate to an 
+existing attribute, a warning will be given.  If it does, then the 
+value of <expression> is placed into <attribute>.  The former value of 
+<attribute> is destroyed.\par \par The assignment operator has several 
+cumulative forms:  +:=, -:=, *:=, /:=, and &:= .  These are all of the 
+form <operator>:= , and have the same effect as the statement 
+<attribute> := <attribute> <operator> <expression>, but are shorter 
+and faster.  In other words, instead of\par \par \f2\fs20 a := a + 
+1\par \f4\fs24 \par write\par \par \f2\fs20 a +:= 1\par \f4\fs24 \par 
+The value of the expression is always the final value of <attribute>.  
+Assignment operators group right to left, which is unusual (most 
+Archetype operators group left to right); this is so that successive 
+assignments can be made to the same value, so that:\par \par \f2\fs20 
+subj := dobj := verb := prep := UNDEFINED\par \f4\fs24 \par will set 
+all four attributes to UNDEFINED.\par \par \sb240 NOTE:  it is 
+important to remember that the attribute on the left hand side of the 
+assignment will receive the \i value\i0  of the expression on the 
+right, not its unevaluated form.  What this means is that a statement 
+such as\par \f2\fs20 \tab abc := main.dobj\par \f4\fs24 will set the 
+value of the attribute abc to the \i current \i0 value of main.dobj.  
+If main.dobj changes its value later, abc's value will not change.  
+This is in contrast to the practice of \i initializing\i0  an 
+attribute with an expression, as described above in \i Object 
+Declarations\i0 .\par \sb0 \par \keepn \b Sending Messages\b0  ( \b 
+->, -->\b0  )\par \par \pard These operators are always of the form 
+<message> -> <object> or <message> -> <type name>, and simply send 
+<message> to <object>.  If <object> has a method defined for 
+<message>, that method will be invoked, and the value of the 
+expression will be the value of the last statement executed in the 
+method.  If <message> is not a defined message, or <object> is not a 
+defined object, the value of the expression is UNDEFINED, and the 
+message is never sent.  Note that the vocabulary of sendable messages 
+is built from all the single-quoted literals in your program.  This 
+simply means that you should always put messages in single quotes.\par 
+\par If <message> and <object> are both valid, but <object> does not 
+have a method defined for <message>, the value of the send expression 
+is the word ABSENT.  Note that this is not just a system-generated 
+message; an object can actually return ABSENT if it wishes to inform 
+the sender that it did not "handle" the message.  This is most 
+commonly used if an object had defined a \b default\b0  message, since 
+the presence of such a method means that the object automatically 
+"handles" any message given it.  For example, the following \b default
+\b0  method handles direction messages, but not any others:\par \par 
+\f2\fs20 default :\par   if message -> compass then\par     message -> 
+handler\par   else\par     ABSENT\par \f4\fs24 \par The pass (-->) 
+operator invokes the appropriate method from <object>, but executes 
+the method within the context of the current object, as though the 
+current object were receiving the message.  This is always the 
+functionality used whenever the receiver is a <type name>, since types 
+do not have attributes.\par One common reason to pass a message to a 
+type is when you are defining an extension to an existing method in 
+your type, and you do not wish to type (or do not know) all the 
+previous code.  When the player tries to drop the following object, 
+there is first a condition:\par \par \f2\fs20 object superglue\par 
+\par   location : drawer\par   desc     : "super glue"\par   sticky   
+: TRUE\par \par methods\par \par   'drop' :\par     if location = 
+player and sticky then\par       write "I can't!  It's stuck to my 
+fingers!"\par     else\par       message --> object\tab \tab \tab # do 
+what you normally do\par \par   'dissolve' :\par     if sticky then 
+\{\par       write "I dissolved the super glue."\par       sticky := 
+FALSE\par       \}\par     else\par       write "It's already 
+dissolved."\par \par end\par \f4\fs24 \par \b Conditionals ( =, ~=, >, 
+<, >=, <= )\par \b0 \par These are operators that compare two values 
+and return either TRUE or FALSE, if their operands are comparable, or 
+UNDEFINED if not.  They are used almost exclusively within \b if\b0 , 
+\b while\b0 , and \b for\b0  statements, although they will always 
+return their value no matter where they are used.\par \par If both 
+operands are or can be converted to numbers, they are compared 
+numerically.  If not, then they are compared as strings, if possible.  
+If they cannot be converted to strings, then the quantitative 
+comparisons ( <, >, <=, >= ) will return UNDEFINED.\par \par The equal 
+( = ) and unequal ( ~= ) operators are special because they can 
+compare non-numeric, non-string values to simply see if they are 
+identical or not.  Even though the operators ( <=, >= ) mean "less 
+than or equal" and "greater than or equal" respectively, these cannot 
+be used in all the same places because they are still checking 
+quantitative equality.  A few examples will make things clearer:\par 
+\par \li4320\fi-4320 \i Comparison\tab Result\par \i0 5 < 6\tab TRUE 
+because five is less than six.\par "mosquito" < "moth"\tab TRUE 
+because "mosquito" comes before "moth" in the ASCII alphabet.\par 5 < 
+"four"\tab TRUE.  Since "four" cannot be converted to a number (it is 
+not composed of digits), 5 is converted to the string "5", and numbers 
+always come before letters in the ASCII alphabet.\par 5 < "4"\tab 
+FALSE.  "4" can be converted to the number 4; they are compared as 
+such and 5 is greater than 4.\par "abc" = "abc"\tab TRUE.\par "def" ~= 
+"abc"\tab TRUE.  "def" is not "abc".\par "abcd" = "abc"\tab FALSE.  
+Two strings must be the same character for character in order to be 
+considered equal.\par player.location = ballroom\tab TRUE if, indeed, 
+the location attribute of the player object points to the ballroom 
+object.\par 7 <= 7\tab TRUE.\par player.location <= ballroom\tab 
+UNDEFINED.  There is no universal sense in which object references can 
+be measured.\par UNDEFINED < 7\tab UNDEFINED.  UNDEFINED has no 
+measurable value in any sense.\par UNDEFINED = 7\tab FALSE.  7 is 
+indeed defined:  as 7.\par box.wearing = UNDEFINED\tab TRUE if either 
+the wearing attribute of the box has not been defined or if it has 
+been explicitly assigned the value of UNDEFINED.\par \li0\fi0 \par 
+\keepn \b The Logical Operators ( and, or, not )\par \b0 \par \pard 
+These operators always return values of TRUE and FALSE; they are used 
+within \b if\b0 , \b while\b0 , and \b for\b0  statements (although 
+they will return their values in other contexts as well) to take 
+action based on a number of conditions:\par \par \li1440\fi-1440 \b 
+and\b0 \tab will be TRUE if both its operands are neither FALSE, 
+ABSENT, or UNDEFINED.\par \b or\b0 \tab will be TRUE so long as at 
+least one operand is neither FALSE, ABSENT, or UNDEFINED.\par \b not
+\b0 \tab is unary; it returns TRUE if its operand is FALSE, ABSENT, or 
+UNDEFINED, and FALSE if not.\par \li0\fi0 \par Because the precedences 
+of these operators are all beneath those of the comparison operators, 
+you can form natural expressions without parentheses such as:\par \par 
+if player.location = trapdoor_room and trapdoor.is_closed then\par 
+\par If you ever get confused, however, use parentheses to ensure 
+correctness.  They will not take any more memory at run time.  
+However, familiarity with the operators' precedence is best of all, 
+and the fewer parentheses, the more readable your code.\par \par 
+\keepn \b The Arithmetic Operators ( +, -, *, /, ^ )\par \b0 \par 
+\pard These perform simple arithmetic on numbers or values that can be 
+converted to numbers, returning the result.  They are evaluated as 
+follows:\par \par \li1440\fi-1440 \b ^\b0 \tab Exponentiation.  Raises 
+its left operand to the power of its right.  Performed right to 
+left.\par \b *\b0 , \b /\b0 \tab Multiplication and division.  
+Performed left to right.\par \b +\b0 , \b -\b0 \tab Addition and 
+subtraction.  Performed left to right.\par \li0\fi0 \par This is the 
+normal algebraic precedence of operators.  Thus:\par \par 3 + 5 * 2 ^ 
+2 = 23\par \par If you intend another precedence, simply use 
+parentheses:\par \par ((3 + 5) * 2)^2 = 256\par \par \keepn \b The 
+String Operators ( &, within, length, leftfrom, rightfrom )\par \b0 
+\par These operators manipulate strings.  They are defined as 
+follows:\par \par \pard\li2160\fi-2160 \b &\b0 \tab Concatenation.  
+Both operands are converted to strings; value is UNDEFINED if this is 
+not possible.  Returns a new string formed by concatenating the right 
+operand to the left operand.  "the " & "cupboard" becomes "the\~cup
+board".\par \b within\b0 \tab Search.  Both operands are converted to 
+strings; value is UNDEFINED if this is not possible.  Returns an 
+integer representing the position in the second string where the first 
+string can be found.  "boar" within "cupboard" = 4.  If the first 
+string cannot be found in the second, the value is 0.  "lard" within 
+"cupboard" = 0.\par \b length\b0 \tab A unary operator expecting a 
+single string (UNDEFINED if otherwise).  Returns the number of 
+characters in the string.  length "snake" = 5, length "" = 0, length 
+player.location = UNDEFINED (unless player.location is, in fact, a 
+string).\par \b leftfrom\b0 \tab Its left operand is a string; its 
+right operand is the position in the string to take characters to the 
+"left from".  Examples:  "cupboard" leftfrom 4 = "cupb", "cupboard" 
+leftfrom 10  = "cupboard", and so forth.\par \b rightfrom\b0 \tab Its 
+left operand is a string; its right operand is the position in the 
+string to take characters to the "right from".  Examples:  "cupboard" 
+rightfrom 4 = "board", "cupboard" rightfrom 1  = "cupboard", and so 
+forth.\par \li0\fi0 \par The \b leftfrom\b0  and \b rightfrom\b0  
+operators are a little clumsy; character range specification would 
+certainly be clearer.  However, substring operations are not all that 
+common in adventure game applications.  The real reason is that the 
+design I chose for my expression parser couldn't handle range 
+specifications.  Someday I'll fix that.\par \par \keepn \b The 
+Conversion Operators ( chs, numeric, string )\b0 \par \par \pard These 
+operators are unary and return some transformation of their operand.  
+They are UNDEFINED if their operand cannot be thus converted.\par \par 
+\li1440\fi-1440 \b chs\b0 \tab CHange Sign.  For numbers only; inverts 
+the sign.  Its alias is a minus sign (\~-\~) in front of a number.  In 
+other words, (5\~*\~-3) and (5\~*\~chs\~3) are equivalent 
+internally.\par \b numeric\b0 \tab Converts a string explicitly to a 
+number.  Its alias is a plus sign ( + ) in front of the string.  In 
+other words, (numeric "453") and (+"453") are equivalent 
+internally.\par \b string\b0 \tab Converts its operand to a string if 
+possible.  TRUE becomes "TRUE", 364 becomes "364" and so forth.  Its 
+alias is an ampersand ( & ) in front of the value to convert.  In 
+other words, (string 453) and (&453) are equivalent internally.\par 
+\li0\fi0 \par Because all Archetype operators attempt to convert their 
+operands to the necessary type anyway, these operators are largely 
+unnecessary except to test to see if the conversion is possible, as 
+in\par \par if numeric obj.attr then ...\par \par \keepn \b The Random 
+Operator ( ? )\par \b0 \par \pard This operator is unary and simply 
+returns a random number in the range 1 - <operand>.  To simulate two 
+six-sided dice rolling, for example, you might write\par \par \f2\fs20 
+diceroll := ?6 + ?6\par \f4\fs24 \par but not\par \par \f2\fs20 
+diceroll = ?6 * 2\par \f4\fs24 \par which would have the effect of 
+rolling a single die and then doubling its value.\par \par \keepn \b 
+The Dot Operator ( . )\par \b0 \par \pard This ubiquitous operator 
+expects an object reference on its left and an attribute name on its 
+right.  If the object has defined or inherited an attribute by that 
+name, it returns the value of that attribute.  If not, it returns 
+UNDEFINED.  The dot operator groups left to right (like most 
+operators) so that "player.location.location.open" refers to the 
+"open" attribute of the object pointed to by the "location" attribute 
+of the object pointed to by the "location" attribute of the "player" 
+object.  In other words, only the very leftmost operand in such a 
+string will be an object reference; the rest must be attribute 
+names.\par \par \keepn \b The "Quote Me" Operator ( >> )\par \b0 \par 
+\pard This operator, like a comment, continues from where it is used 
+up to the end of the line in the source code.  Instead of commenting 
+out what follows it, however, it writes it to screen, just like the \b 
+write\b0  statement.  For blocks of text that need a particular kind 
+of indentation, it is more convenient and readable than \b write\b0  
+because "what you see is what you get".  Also, since the "quote me" 
+looks only for the end of the line, any characters can follow it, 
+including quotation marks and space, without prematurely ending the 
+expression.\par \par Like the \b write\b0  statements, output from the 
+"quote me" operator is also "paged" (paused for the user every 23 
+lines).  Lines exceeding 75 characters or so will also be 
+word-wrapped.\par \par \keepn \b Precedence of Operators\par \b0 \par 
+\pard Any expression enclosed in parentheses is evaluated first, 
+{\*\bkmkstart Back 
+Here}{\*\bkmkend Back Here}beginning with the innermost set of parentheses.  Where 
+parentheses are not used, operators with the highest precedence are 
+evaluated first.\par \par \pard\tx1440\tx3240 \i Operator\tab 
+Precedence\tab Grouping\par \i0\f0 .\tab 13\tab left to right\par \par 
+chs\tab 12\tab unary\par numeric\tab 12\tab unary\par string\tab 
+12\tab unary\par random\tab 12\tab unary\par length\tab 12\tab 
+unary\par \par ^\tab 11\tab right to left\par \par *\tab 10\tab left 
+to right\par /\tab 10\tab left to right\par \par +\tab 9\tab left to 
+right\par -\tab 9\tab left to right\par &\tab 9\tab left to right\par 
+\par within\tab 8\tab left to right\par \par leftfrom\tab 7\tab left 
+to right\par rightfrom\tab 7\tab left to right\par \par ->\tab 6\tab 
+left to right\par -->\tab 6\tab left to right\par \par =\tab 5\tab 
+left to right\par ~=\tab 5\tab left to right\par >\tab 5\tab left to 
+right\par <\tab 5\tab left to right\par >=\tab 5\tab left to right\par 
+<=\tab 5\tab left to right\par \par not\tab 4\tab -\par and\tab 3\tab 
+left to right\par or\tab 2\tab left to right\par \par *:=\tab 1\tab 
+right to left\par /:=\tab 1\tab right to left\par +:=\tab 1\tab right 
+to left\par -:=\tab 1\tab right to left\par &:=\tab 1\tab right to 
+left\par :=\tab 1\tab right to left\par \pard \f4 \par \keepn \b Data 
+Types\par \b0 \par \i Strings\par \pard \i0 Strings are represented 
+within double quote marks (").  If the string is supposed to contain a 
+double quote mark itself, precede the double quote with a backslash.  
+Doing so indicates that the double quote is to be part of the string, 
+not the end of it.  For example,\par \par \f2\fs20 write "My name is 
+\\"Bob\\""\par \f4\fs24 \par produces\par \par \f2\fs20 My name is 
+"Bob"\par \f4\fs24 \par Two backslashes in a row (\\\\) become a 
+single backslash within a string.\par \par There are four other 
+characters that, when preceded by a backslash, produce a "special 
+character" within a string:\par \par \tab \\b\tab The backspace 
+character\par \tab \\e\tab The escape character (CHR(27))\par \tab 
+\\t\tab The tab character\par \tab \\n\tab The newline (a carriage 
+return/line feed)\par \par However, be careful of using these 
+characters within your Archetype strings because as of the writing of 
+this manual, the word-wrap and paging algorithms do not recognize 
+them!  In other words, if you have a very long piece of text 
+containing \\n's, the output will not be stopped at the 23rd line.  
+The output engine does not realize that the \\n finished a line.\par 
+\par Any other character preceded by a backslash becomes simply that 
+character without the backslash.  \\m becomes m, for example.\par \par 
+Also note that no string can ever exceed 256 characters is length.  
+This unfortunate limitation is a consequence of the fact that 
+Archetype was programmed in Turbo Pascal, which also has this 
+limitation.  (And the fact that the programmer was too lazy to define 
+his own string type.)\par \par \keepn \i Numbers\par \pard \i0 
+Archetype supports four-byte integers only.  No real numbers, no 
+floating-point arithmetic.  Numbers therefore have the range of \_2^32 
+to 2^32 - 1.\par \par \keepn \i Messages\par \pard \i0 A message is 
+enclosed in single quotes as opposed to a string, which is enclosed in 
+double quotes.  Any message can be converted to a string, but a string 
+can only be converted to a message if the message appears somewhere 
+else in your program in single quotes.  The reason for this is that 
+messages are stored in the .ACX file as a single number.  This 
+improves speed (and memory usage) a great deal and encourages the use 
+of a message as a unique constant instead of as a free-form string.  
+Therefore you do not have to worry that a long message such as 
+'DEBUG\~EXPRESSIONS' will be slower to send and receive than 'AB'; it 
+won't.\par \par It is an Archetype convention to use all caps in a 
+system message and all lowercase if the message represents a word from 
+the parser.  If you define your own messages for simple inter-object 
+communication, the convention is to capitalize the first letter, as in 
+'Repeated Action'.\par \par \keepn \i Objects\i0 \par \pard These are 
+declared in the source code or created with the \b create\b0  
+statement.  They cannot be converted to and from any other data type.  
+They are valid on the right hand sides of the ->, -->, and := 
+operators, and on the left hand side of the dot (.) operator.\par \par 
+\keepn \i Types\b \par \pard \b0\i0 These are only declared within the 
+source code; they cannot be dynamically created.  There is little you 
+can do at run-time with a type object; you are not allowed to 
+reference its attributes with the dot (.) operator, and you cannot 
+send messages to it with -> .  You can, however, pass messages to it 
+with -->.  In fact if you use -> with a type on the right hand side it 
+will be demoted to \_\_>.  This can be useful when an object has 
+redefined a method but needs to invoke the original.\par \par \keepn 
+\i Keywords\i0 \par \pard Any identifier not declared as an object, 
+type, or attribute is a keyword; a state value.  These can be assigned 
+and compared against but have no meaningful conversion to strings or 
+numbers.  If the /K option is used with the CREATE program, all 
+keywords must be declared with the \b keyword\b0  statement.  This 
+helps catch spelling errors that might otherwise be very difficult to 
+debug, particularly in a large program.\par \par \par \keepn \b The 
+System Object\b0 \par \par \pard As mentioned earlier, there is a 
+special object name, "main", to which Archetype sends the message 
+'START' when the interpreter starts up.  The second special object 
+name in Archetype is "system", and refers to the system object that is 
+part of the interpreter.  This object performs parsing and 
+parsing-related operations, sorting of lists of strings, debugging, 
+and save/restore of the state of the interpreter.\par \par The system 
+object is also different in one major respect from all other objects 
+in Archetype:  it is the only object that can receive free-form 
+strings as messages.  As mentioned before, all other Archetype objects 
+can only receive strings which appear elsewhere as messages.\par \par 
+Generally, the system object is sent messages which put it into one 
+state or another, and then all strings it receives until another 
+special string are considered data.\par \par \keepn \i Messages 
+Pertaining to Parsing\i0 \par \par 'ABBR'\par \pard\keep\li720 Sets 
+the abbreviation level of the parsing.  This puts the system object 
+into a state where it prepares to receive one numeric message; then it 
+returns to idle.  Set the abbreviation as follows:\line 'ABBR' -> 
+system\line 4      -> system\line This would have the effect of 
+turning "calculator" into "calc", both when the vocabulary is built 
+and when player commands are being parsed.\par \pard\keepn 'INIT 
+PARSER'\par \pard\li720 Initializes the parser and then puts the 
+system into its vocabulary building state.  See 'OPEN PARSER'.\par 
+\keepn\li0 'OPEN PARSER'\par \pard\li720 Puts the system into 
+vocabularly building state.  Does not wipe out the vocabularly already 
+built.  In this state, all messages are assumed to be names of verbs 
+or nouns, except the special messages 'VERB LIST', 'NOUN LIST', or 
+'CLOSE PARSER'.  The object which the name refers to is assumed to be 
+the sender.  Multiple names for a single object can be separated by 
+vertical bars; thus, the message 'rock|stone|rowlirag' is considered 
+to be three synonymous names for the sender of the message.\par \keepn 
+'VERB LIST'\par \pard\li1440 All subsequent messages are considered to 
+be verb names or synonyms.\par \li720 'NOUN LIST'\par \li1440 All 
+subsequent messages are considered to be nouns.  Either 'VERB\~LIST' 
+or 'NOUN\~LIST' must be sent to the system after an 'OPEN\~PARSER'; 
+there is no default.\par \keepn\li720 'CLOSE PARSER'\par \pard\li1440 
+Stop receiving vocabulary items; return to idle state.\par \keepn\li0 
+'ROLL CALL'\par \pard\li720 To help it resolve ambiguities, the system 
+needs to know which objects are "nearby" the player.  In other words, 
+if there are six different objects defined in a game which are all 
+called "button", and the player types "push button", the button 
+indicated is probably the one nearby.  'ROLL\~CALL' erases the current 
+sense of what is nearby and prepares the system to receive 'PRESENT' 
+messages.\par \keepn\li0 'PRESENT'\par \pard\li720 The sender is 
+assumed to be a "nearby" object, and will continue to be considered 
+such until the next 'ROLL CALL' message.\par \keepn\li0 'PLAYER 
+CMD'\par \pard\li720 Like 'ABBR', this takes a single "argument":  it 
+puts the system into a state where the next message received is 
+considered data, then returns to idle.  In this case the message is 
+the exact string the player typed in.\par \keepn\li0 'NORMALIZE'\par 
+\pard\li720 Returns the normalized player command as of the last 
+'PLAYER\~CMD' message.  This string will be in all lowercase, with 
+words separated by a single space, all punctuation removed except 
+apostrophes and hyphens, and will always have one trailing space.  If 
+the player typed nothing at all, 'NORMALIZE' will return a single 
+space.\par \keepn\li0 'PARSE'\par \pard\li720 Parses the last string 
+received through 'PLAYER CMD'.  Does not return anything, simply 
+performs the action of parsing.  Gets rid of all instances of the 
+words "a", "an", or "the" before parsing.\par \keepn\li0 'NEXT 
+OBJECT'\par \pard\li720 This is how the system object indicates which 
+objects matched what words in the player's string.  The string from 
+'PLAYER\~CMD' will have been turned into a sequence of objects.  This 
+is possible because even verbs have objects associated with them.  
+'NEXT\~OBJECT' returns the next object in the list, from left to 
+right.  If the word or phrase didn't translate, 'NEXT\~OBJECT' returns 
+the string that failed to parse.  When the list of objects is 
+exhausted, 'NEXT\~OBJECT' returns UNDEFINED, and will do so until the 
+'PARSE' message is sent again.\par \keepn\li0 'WHICH OBJECT'\par 
+\pard\li720 Used to look up an object, given its parse name.  Like the 
+'PLAYER\~CMD' message, this message puts the system into a state where 
+it expects that the very next message received will be a string with 
+the name of an object.  When that name is received, the system goes 
+back to idle state and returns a pointer to the object with that name, 
+or UNDEFINED if no such object exists.  The lookup is based on the 
+vocabulary given to the system since the last 'CLOSE\~PARSER' messa
+ge.\par \par \li0 \i Messages Pertaining to Sorting\i0 \par \par 
+\keepn 'INIT SORTER'\par \pard\li720 Initializes the system object's 
+sorting algorithm, which is the heap sort.  It then opens the sorter, 
+as if an 'OPEN\~SORTER' message was sent.\par \keepn\li0 'OPEN 
+SORTER'\par \pard\li720 Prepares the system object to receive data.  
+Every string sent to the system is dropped on the heap as sortable 
+data from now on until the message 'CLOSE\~SORTER'.\par 'CLOSE 
+SORTER'\par \li1440 Stop receiving sort data; return to idle 
+state.\par \keepn\li0 'NEXT SORTED'\par \pard\li720 Returns the next 
+string in a sorted list.  Sorting is always done in ascending order, 
+so the string returned will have been the lexically "smallest" string 
+since the last 'CLOSE\~SORTER' message.  After returning the string, 
+it is removed from the heap, and when the heap is empty, 
+'NEXT\~SORTED' returns UNDEFINED.\par \li0 \par \i Messages Pertaining 
+to Debugging\i0 \par \par These three message are all "toggles":  
+sending the message turns the associated property on; sending them 
+again turns it off.  For these messages to be useful at all, the 
+Archetype code must have been CREATEd with debugging information.\par 
+\par \keepn 'DEBUG MESSAGES'\par \pard\li720 Prints out to the screen 
+every message that is sent; who it's being sent to and who is sending 
+it.\par \keepn\li0 'DEBUG EXPRESSIONS'\par \pard\li720 Prints to the 
+screen every expression that is going to be evaluated and what it 
+evaluates to.\par \keepn\li0 'DEBUG STATEMENTS'\par \pard\li720 Prints 
+to the screen every statement that is going to be executed.\par \li0 
+\par The following messages are not toggles; they are simple actions 
+that only report the state of the interpreter.\par \par \keepn 'DEBUG 
+MEMORY'\par \pard\li720 Outputs a short report on the number of bytes 
+free and what the maximum memory request is allowed to be.\par 
+\keepn\li0 'FREE MEMORY'\par \pard\li720 This is a \i query\i0 , not a 
+command.  Returns an integer which is the number of bytes free for 
+Archetype to use.\par \li0 \par \i Messages Pertaining to the 
+Interpreter State\i0 \par \par Both of these messages behave like 
+'WHICH\~OBJECT', above:  send the message to the system and follow it 
+with the name of the file to use as the state file.  Both messages 
+return UNDEFINED if the file cannot be opened.\par \par \keepn 'SAVE 
+STATE'\par \pard\li720 Saves the state of the interpreter to the given 
+file name.  This includes the values of all attributes and any 
+dynamically created objects.  It does \i not\i0  include the assembled 
+vocabulary.  Returns TRUE when done.\par \keepn\li0 'LOAD STATE'\par 
+\pard\li720 Loads all of the information in the state file with the 
+given file name.  It will not load, however, if the state file was not 
+written by the exact same .ACX file.  In other words, if you write out 
+a state file from within a program, and then recompile that Archetype 
+program, the new .ACX file will not be able to load the previous state 
+file.  If this happens, the message will return FALSE; otherwise it 
+will load the information and return TRUE.\par \li0 \page Appendix 
+A\par \par Backus-Naur Form\par \par The Backus-Naur Form (or BNF) is 
+a way of representing syntax.  In this manual, the meaning of various 
+symbols is as follows:\par \par \li2160\fi-2160 \b boldface\b0 \tab - 
+the use of \b boldface\b0  type means that this should be typed 
+literally.\par <words>\tab - something in <angle brackets> is 
+symbolic; it refers to something else.\par ( )\tab - parentheses mean 
+that everything inside is to be considered one thing.\par |\tab - the 
+vertical bar is used to separate alternatives.  For example, (a | b | 
+c) means exactly one of a, b, or c.  (a\~\~(b\~|\~c)) means ab or 
+ac.\par [ ]\tab - square brackets mean that what is inside is 
+optional; you can use it or not.  (a [b | c]) means either a, ab, or 
+ac.\par *\tab - the asterisk means "zero or more" of what it follows.  
+ab* means a, ab, abb, or abbb, and so on.\par \li0\fi0 \par \i 
+Example:\par \i0 \par The following BNF:\par \pard\brdrs ( \b write\b0 
+ | \b writes\b0  | \b stop\b0  ) [ <expression> (\b ,\b0  <expression> 
+)* ]\par \pard \par can be expressed in English as:\par \par Either 
+the word write, writes, or stop, optionally followed by an expression 
+and zero or more instances of a comma followed by another 
+expression.\par \par Some of the valid statements you can construct 
+(leaving <expression> within angle brackets) from this BNF are:\par 
+\par write\par stop <expression>\par writes <expression>, 
+<expression>\par write <expression>, <expression>, <expression>\par 
+stop\par \par \par }
